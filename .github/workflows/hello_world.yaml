@@ -15,3 +15,11 @@ jobs:
 
       - name: Test if repo is check-out
         run: tree
+
+      - name: Download Image & decompress
+        run: |
+          curl -O https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf/images/raspios_oldstable_lite_armhf-2023-02-22/2023-02-21-raspios-buster-armhf-lite.img.xz
+          unxz -v 2023-02-21-raspios-buster-armhf-lite.img.xz
+
+      - name: Check if image is downloaded and decompressed
+        run: tree
