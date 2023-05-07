@@ -9,3 +9,9 @@ jobs:
     steps:
       - name: Say hello
         run: echo "Hello World"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Test if repo is check-out
+        run: tree
