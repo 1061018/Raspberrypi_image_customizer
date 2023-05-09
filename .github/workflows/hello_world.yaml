@@ -23,3 +23,6 @@ jobs:
 
       - name: Check if image is downloaded and decompressed
         run: tree
+
+      - name: Run script
+        run: sudo sh ./scripts/customize_image.sh
