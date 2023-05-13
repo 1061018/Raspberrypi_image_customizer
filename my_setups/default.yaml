@@ -1,3 +1,4 @@
+# yamllint disable rule:line-length
 raspberry_py_image: "https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf/images/raspios_oldstable_lite_armhf-2023-02-22/2023-02-21-raspios-buster-armhf-lite.img.xz"
 user_name: "my_user"
 user_name_password: "my_user_pass"
