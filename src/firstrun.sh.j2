@@ -50,7 +50,7 @@ fi
 #user
 #vars: user_name
 #      user_password
-#      
+#
 {% if set_user %}
 if [ -f /usr/lib/userconf-pi/userconf ]; then
    /usr/lib/userconf-pi/userconf '{{ user_name }}' '{{ user_password }}'
