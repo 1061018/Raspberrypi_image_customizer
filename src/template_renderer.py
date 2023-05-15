@@ -6,5 +6,5 @@ set_hostname = True
 new_hostname = "test_hostname"
 final_script = template.render(data)
 
-with open('my_shell.sh', 'w') as f:
+with open('firstrun.sh', 'w') as f:
     f.write(final_script)
