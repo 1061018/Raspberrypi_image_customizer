@@ -14,6 +14,7 @@ def main():
     print("Image downloaded, initiating decompression!")
     decompressed_content = lzma.decompress(response.content)
     print("Image decompressed!")
+    print(lzma.__all__)
 
     with open("2023-02-21-raspios-buster-armhf-lite.img", "wb") as fp:
         fp.write(decompressed_content)

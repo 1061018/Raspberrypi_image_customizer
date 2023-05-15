@@ -2,24 +2,60 @@
 
 set +e
 
+#
+# em cima vai sempre
+########
+
+#Set Hostname
+#vars: new_hostname
+#      set_hostname
+
 CURRENT_HOSTNAME=`cat /etc/hostname | tr -d " \t\n\r"`
 if [ -f /usr/lib/raspberrypi-sys-mods/imager_custom ]; then
-   /usr/lib/raspberrypi-sys-mods/imager_custom set_hostname raspberrypi
+   /usr/lib/raspberrypi-sys-mods/imager_custom set_hostname hc
 else
-   echo raspberrypi >/etc/hostname
-   sed -i "s/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\traspberrypi/g" /etc/hosts
+   echo hc >/etc/hostname
+   sed -i "s/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\thc/g" /etc/hosts
 fi
+
+
+#Set SSH
+#vars: enable_ssh
+#      set_user
+#      ssh_public_key
+
 FIRSTUSER=`getent passwd 1000 | cut -d: -f1`
 FIRSTUSERHOME=`getent passwd 1000 | cut -d: -f6`
+
+
+if [ -f /usr/lib/raspberrypi-sys-mods/imager_custom ]; then
+   /usr/lib/raspberrypi-sys-mods/imager_custom enable_ssh -k 'ssh_test_key00000111112222'
+else
+   install -o "$FIRSTUSER" -m 700 -d "$FIRSTUSERHOME/.ssh"
+   install -o "$FIRSTUSER" -m 600 <(printf "ssh_test_key00000111112222") "$FIRSTUSERHOME/.ssh/authorized_keys"
+   echo 'PasswordAuthentication no' >>/etc/ssh/sshd_config
+   systemctl enable ssh
+fi
+
+#vars: enable_ssh
+#      password_authentication
+
 if [ -f /usr/lib/raspberrypi-sys-mods/imager_custom ]; then
    /usr/lib/raspberrypi-sys-mods/imager_custom enable_ssh
 else
    systemctl enable ssh
 fi
+
+
+#user
+#vars: user_name
+#      user_password
+#      
+
 if [ -f /usr/lib/userconf-pi/userconf ]; then
-   /usr/lib/userconf-pi/userconf 'hc' '$5$//Gv4ZvOJA$0Z.DX9eooxIT1opwuVZZVtMeehptpdpnYDuGf6g3n18'
+   /usr/lib/userconf-pi/userconf 'hc' 'passdo_hc'
 else
-   echo "$FIRSTUSER:"'$5$//Gv4ZvOJA$0Z.DX9eooxIT1opwuVZZVtMeehptpdpnYDuGf6g3n18' | chpasswd -e
+   echo "$FIRSTUSER:"'passdo_hc' | chpasswd -e
    if [ "$FIRSTUSER" != "hc" ]; then
       usermod -l "hc" "$FIRSTUSER"
       usermod -m -d "/home/hc" "hc"
@@ -35,8 +71,19 @@ else
       fi
    fi
 fi
+
+
+#fim user
+
+# wifi
+#vars: enable_wifi
+#      wifi_ssid
+#      wifi_pass
+#      wifi_country
+#      hidden_ssid
+
 if [ -f /usr/lib/raspberrypi-sys-mods/imager_custom ]; then
-   /usr/lib/raspberrypi-sys-mods/imager_custom set_wlan 'MEO-829250' 'e97ed8178977e6ebccc466190dc805d59d8adec96195a3014f7d44aae8926d46' 'PT'
+   /usr/lib/raspberrypi-sys-mods/imager_custom set_wlan -h 'meo-cenas' 'passdaMeo' 'PT'
 else
 cat >/etc/wpa_supplicant/wpa_supplicant.conf <<'WPAEOF'
 country=PT
@@ -45,8 +92,9 @@ ap_scan=1
 
 update_config=1
 network={
-	ssid="MEO-829250"
-	psk=e97ed8178977e6ebccc466190dc805d59d8adec96195a3014f7d44aae8926d46
+   scan_ssid=1
+	ssid="meo-cenas"
+	psk=passdaMeo
 }
 
 WPAEOF
@@ -56,12 +104,19 @@ WPAEOF
        echo 0 > $filename
    done
 fi
+
+
+#timezone e teclado
+# set_local
+# keyboard
+# timezone
+
 if [ -f /usr/lib/raspberrypi-sys-mods/imager_custom ]; then
    /usr/lib/raspberrypi-sys-mods/imager_custom set_keymap 'pt'
-   /usr/lib/raspberrypi-sys-mods/imager_custom set_timezone 'Europe/Lisbon'
+   /usr/lib/raspberrypi-sys-mods/imager_custom set_timezone 'europ/lisbon'
 else
    rm -f /etc/localtime
-   echo "Europe/Lisbon" >/etc/timezone
+   echo "europ/lisbon" >/etc/timezone
    dpkg-reconfigure -f noninteractive tzdata
 cat >/etc/default/keyboard <<'KBEOF'
 XKBMODEL="pc105"
@@ -72,6 +127,13 @@ XKBOPTIONS=""
 KBEOF
    dpkg-reconfigure -f noninteractive keyboard-configuration
 fi
+
+####
+
+######
+#em baixo vai sempre
+#####
+
 rm -f /boot/firstrun.sh
 sed -i 's| systemd.run.*||g' /boot/cmdline.txt
 exit 0
