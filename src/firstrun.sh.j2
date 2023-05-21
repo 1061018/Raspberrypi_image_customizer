@@ -55,7 +55,7 @@ fi
 if [ -f /usr/lib/userconf-pi/userconf ]; then
    /usr/lib/userconf-pi/userconf '{{ user_name }}' '{{ user_password }}'
 else
-   echo "$FIRSTUSER:"'{{ user_password }}' | chpasswd -e
+   echo "$FIRSTUSER:"'{{ user_password }}' | chpasswd # -e
    if [ "$FIRSTUSER" != "{{ user_name }}" ]; then
       usermod -l "{{ user_name }}" "$FIRSTUSER"
       usermod -m -d "/home/{{ user_name }}" "{{ user_name }}"
@@ -94,7 +94,7 @@ update_config=1
 network={
 {% if hidden_ssid %}   scan_ssid=1{% endif %}
 	ssid="{{ wifi_ssid }}"
-	psk={{ wifi_pass }}
+	psk="{{ wifi_pass }}"
 }
 
 WPAEOF

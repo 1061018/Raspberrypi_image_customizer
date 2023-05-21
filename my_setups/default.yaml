@@ -1,15 +1,15 @@
 # yamllint disable rule:line-length
 raspberry_py_image: "https://downloads.raspberrypi.org/raspios_oldstable_lite_armhf/images/raspios_oldstable_lite_armhf-2023-02-22/2023-02-21-raspios-buster-armhf-lite.img.xz"
-host_name: host_trabalho
-user_name: "my_user"
-user_name_password: "my_user_pass"
-wifi_ssid: "my_wifi_ssid"
-wifi_password: "my_wifi_password"
+host_name: TEST_ACTION_SECRETS_HOSTNAME_1
+user_name: TEST_ACTION_SECRETS_USER_1
+user_name_password: TEST_ACTION_SECRETS_USER_PASS_1
+wifi_ssid: TEST_ACTION_SECRETS_WIFI_NAME_1
+wifi_password: TEST_ACTION_SECRETS_WIFI_PASS_1
 wifi_country: "PT"
-hidden_ssid: True
-enable_ssh:
-ssh_password_authentication:
+hidden_ssid: False
+enable_ssh: True
+ssh_password_authentication: True
 ssh_public_key:
 set_local: True
 keyboard: "pt"
-timezone: "europ/lisbon"
+timezone: "Europe/Lisbon"
