@@ -4,7 +4,7 @@ on: [push]
 
 env:
   image_name: my_image.img
-  hostname: $hostname
+
 
 jobs:
   generate-customized-image:
@@ -21,23 +21,23 @@ jobs:
         run: python3 src/template_renderer.py
         env:
           HOSTNAME: ${{ secrets[format('{0}', env.host_name)] }}
-          USERNAME: ${{ secrets[format('{0}', env.user_name)] }}
-          USERNAMEPASSWORD: ${{ secrets[format('{0}', env.user_name_password)] }}
+          NAMEUSER: ${{ secrets[format('{0}', env.user_name)] }}
+          NAMEUSERPASSWORD: ${{ secrets[format('{0}', env.user_name_password)] }}
           WIFISSID: ${{ secrets[format('{0}', env.wifi_ssid)] }}
           WIFIPASSWORD: ${{ secrets[format('{0}', env.wifi_password)] }}
           SSHPUBLICKEY: ${{ secrets[format('{0}', env.ssh_public_key)] }}
 
       - name: Image Fetcher
-        run: python3 src/image_fetcher.py
+        run: python3 src/image_fetcher.py ${{ env.image_name }}
 
       - name: Check if image is downloaded and decompressed
         run: tree
 
       - name: Run script
-        run: sudo sh ./src/scripts/customize_image.sh
+        run: sudo sh ./src/scripts/customize_image.sh ${{ env.image_name }}
 
       - name: Upload data to artifactory
         uses: actions/upload-artifact@v3
         with:
           name: Rasp_custom_image
-          path: 2023-02-21-raspios-buster-armhf-lite.img
+          path: ${{ env.image_name }}
