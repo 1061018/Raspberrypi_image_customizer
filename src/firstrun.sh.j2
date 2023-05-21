@@ -8,8 +8,8 @@ set +e
 
 #Set Hostname
 #vars: new_hostname
-#      set_hostname
-{% if set_hostname %}
+
+{% if new_hostname %}
 CURRENT_HOSTNAME=`cat /etc/hostname | tr -d " \t\n\r"`
 if [ -f /usr/lib/raspberrypi-sys-mods/imager_custom ]; then
    /usr/lib/raspberrypi-sys-mods/imager_custom set_hostname {{ new_hostname }}
@@ -38,8 +38,8 @@ else
 fi
 {% endif %}
 #vars: enable_ssh
-#      password_authentication
-{% if enable_ssh and password_authentication %}
+#      ssh_password_authentication
+{% if enable_ssh and ssh_password_authentication %}
 if [ -f /usr/lib/raspberrypi-sys-mods/imager_custom ]; then
    /usr/lib/raspberrypi-sys-mods/imager_custom enable_ssh
 else
@@ -50,7 +50,7 @@ fi
 #user
 #vars: user_name
 #      user_password
-#      
+#
 {% if set_user %}
 if [ -f /usr/lib/userconf-pi/userconf ]; then
    /usr/lib/userconf-pi/userconf '{{ user_name }}' '{{ user_password }}'

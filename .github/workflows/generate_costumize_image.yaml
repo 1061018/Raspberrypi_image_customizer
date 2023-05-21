@@ -4,6 +4,7 @@ on: [push]
 
 env:
   image_name: my_image.img
+  hostname: $hostname
 
 jobs:
   generate-customized-image:
@@ -12,6 +13,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Gather secrets
+        run: python3 src/gather_secrets.py
+
+      - name: Render template
+        run: python3 src/template_renderer.py
+        env:
+          HOSTNAME: ${{ secrets[format('{0}', env.host_name)] }}
+          USERNAME: ${{ secrets[format('{0}', env.user_name)] }}
+          USERNAMEPASSWORD: ${{ secrets[format('{0}', env.user_name_password)] }}
+          WIFISSID: ${{ secrets[format('{0}', env.wifi_ssid)] }}
+          WIFIPASSWORD: ${{ secrets[format('{0}', env.wifi_password)] }}
+          SSHPUBLICKEY: ${{ secrets[format('{0}', env.ssh_public_key)] }}
 
       - name: Image Fetcher
         run: python3 src/image_fetcher.py
